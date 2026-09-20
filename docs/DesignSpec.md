@@ -1,163 +1,178 @@
 # 知识配置平台 - 设计规范（Design Spec）
 
-本文档定义中后台前端的 **Look & Feel**，依据参考样式（Oravia 风格）提炼并适配为管理端界面规范。前端实现须遵循本规范，未经批准不得偏离。
+本文档定义中后台前端的视觉设计令牌与组件规范。实现必须以 CSS Variables 与 Tailwind 配置中的同名令牌为单一来源，页面不得直接写死会随主题变化的配色、圆角或阴影。
 
 ---
 
-## 1. 色彩系统（Palette）
+## 1. 主题机制
 
-与参考一致，以浅底、深字、低饱和度辅助色为主，保证可读性与专业感。
+### 1.1 两套主题
 
-| 语义名称 | 色值 | 用途 |
-|----------|------|------|
-| **canvas** | `#FAFAFA` | 页面背景、主内容区底色 |
-| **surface** | `#FFFFFF` | 卡片、弹层、输入框背景 |
-| **obsidian** | `#111111` | 主文字、主按钮背景、强调边框、图标 |
-| **charcoal** | `#333333` | 次要标题、深色辅助文字 |
-| **subtle** | `#737373` | 说明文字、占位符、辅助信息 |
-| **border** | `#E5E5E5` | 边框、分割线、表格线 |
-| **accent** | `#252525` | 悬停/焦点时的深色强调 |
-| **primary** | `#000000` | 与 obsidian 同族，用于品牌/Logo 等 |
+| 主题 | `data-theme` | 根节点类名 | 说明 |
+|------|--------------|------------|------|
+| 浅色 | `light` | 无 `dark` 类 | 默认风格，保持现有 VOYAGE 展示效果 |
+| 深色 | `dark` | `dark` | 在保持同一布局与层级的前提下切换深色表面、文字、边框与阴影 |
 
-**使用原则**：正文与标题以 obsidian/charcoal 为主，说明类用 subtle；所有大面积背景用 canvas，卡片与表单用 surface；边框统一用 border。
+- 主题在页面样式加载前由 `js/theme.js` 写入 `<html data-theme="...">`，避免刷新闪屏。
+- 用户选择持久化在 `localStorage.knowledge_platform_theme`。
+- 未保存或值非法时默认使用 `light`。
+- 切换主题时派发 `themechange` 事件，图表等无法仅依靠 CSS 变量完成刷新的内容监听该事件更新。
 
----
+### 1.2 切换入口
 
-## 2. 字体与排版（Typography）
-
-- **无衬线正文/标题**：Plus Jakarta Sans，后备 Inter、sans-serif。用于界面所有正文、标题、按钮文案。
-- **等宽**：JetBrains Mono，用于 ID、代码、时间戳等。
-- **字重**：正文 400，小标题/标签 500，区块标题 600，页面标题 600–700。
-- **字距**：标题可使用 `tracking-tight`（-0.02em）或 `tracking-tighter`（-0.04em），正文默认。
-- **抗锯齿**：全局 `-webkit-font-smoothing: antialiased`。
-
-**层级建议**：
-- 页面主标题：约 1.25rem–1.5rem，font-semibold，obsidian。
-- 区块标题：约 1rem–1.125rem，font-semibold，obsidian。
-- 正文：约 0.875rem，regular，obsidian/charcoal。
-- 辅助说明：约 0.75rem–0.8125rem，subtle。
-- 小标签/角标：约 0.625rem–0.6875rem，uppercase 可选，tracking-wider。
-
-**字体加载**：通过 Google Fonts 引入 Plus Jakarta Sans（300–800）、Inter（200–600）、JetBrains Mono（300–500），与参考一致。
+- 已登录页面：主题切换按钮位于顶栏右侧。
+- 登录页：主题切换按钮固定在页面右上角。
+- 按钮必须包含可更新的 `aria-label` 与 `aria-pressed`。
 
 ---
 
-## 3. 圆角与阴影（Radius & Shadow）
+## 2. 色彩令牌
 
-- **圆角**：卡片、弹层、主容器用 `rounded-xl`（约 12px）；按钮用 `rounded-lg`（约 8px）；标签、徽标用 `rounded`（约 6px）或 `rounded-sm`（约 4px）。
-- **阴影**：  
-  - 默认卡片：`0 2px 4px rgba(0,0,0,0.02), 0 8px 16px -4px rgba(0,0,0,0.04)`。  
-  - 悬停/选中：略加强，如 `0 4px 8px rgba(0,0,0,0.03), 0 12px 24px -6px rgba(0,0,0,0.06)`，并配合轻微上移（如 translateY(-2px)）。  
-  - 主按钮：默认 `0 1px 2px rgba(0,0,0,0.08)`，悬停可加强为 `0 8px 24px -4px rgba(0,0,0,0.25)`。
+### 2.1 语义色
 
-与参考中的 **premium-card** 一致：白底、细边框、轻阴影，悬停时略微上浮并加深阴影。
+| Token | 浅色 | 深色 | 用途 |
+|-------|------|------|------|
+| `--color-canvas` | `#f8fafc` | `#0b1120` | 页面背景 |
+| `--color-sidebar` | `rgba(255,255,255,.85)` | `rgba(15,23,42,.86)` | 侧栏背景 |
+| `--color-header` | `#ffffff` | `#0f172a` | 顶栏背景 |
+| `--color-surface` | `#ffffff` | `#111c2e` | 卡片、表格、弹层、Toast |
+| `--color-surface-muted` | `#f1f5f9` | `#17243a` | 次级表面、悬停表面 |
+| `--color-border` | `#e2e8f0` | `#2a3850` | 主要边框 |
+| `--color-border-light` | `#f1f5f9` | `#202d43` | 卡片、表格的弱分割线 |
+| `--color-text-strong` | `#0f172a` | `#f8fafc` | 标题、主要数据、强文字 |
+| `--color-text-base` | `#334155` | `#cbd5e1` | 正文 |
+| `--color-text-muted` | `#64748b` | `#94a3b8` | 辅助文字、空状态 |
+| `--color-text-subtle` | `#94a3b8` | `#64748b` | 占位符与弱提示 |
+| `--color-primary` | `#0f172a` | `#f8fafc` | 主按钮、品牌底色 |
+| `--color-on-primary` | `#ffffff` | `#0f172a` | 主按钮与品牌底色上的文字 |
+| `--color-accent` | `#059669` | `#34d399` | 品牌强调色、当前导航 |
 
----
+### 2.2 Slate 映射
 
-## 4. 动效与过渡（Motion）
+Tailwind 的 `slate-*` 颜色不直接使用固定色板，而映射到主题变量，保证同一个 `text-slate-*` / `bg-slate-*` / `border-slate-*` 类在两套主题下都可读。
 
-- **缓动**：统一使用 `cubic-bezier(0.22, 1, 0.36, 1)` 或 `cubic-bezier(0.25, 1, 0.5, 1)`，时长 300–500ms。
-- **交互反馈**：  
-  - 主按钮：hover 时 `scale(1.03–1.04)`，active 时 `scale(0.97–0.98)`。  
-  - 卡片：hover 时 `translateY(-2px)` + 阴影与边框加强。  
-  - 导航项：颜色/背景的 transition 约 300ms。
-- **可选**：主按钮上的高光扫过（shimmer）效果可与参考一致，不作为强制项。
+| Tailwind 色阶 | 浅色 | 深色 |
+|---------------|------|------|
+| 50 | `#f8fafc` | `#17243a` |
+| 100 | `#f1f5f9` | `#1e2c42` |
+| 200 | `#e2e8f0` | `#334155` |
+| 400 | `#94a3b8` | `#64748b` |
+| 500 | `#64748b` | `#94a3b8` |
+| 600 | `#475569` | `#94a3b8` |
+| 700 | `#334155` | `#cbd5e1` |
+| 800 | `#1e293b` | `#e2e8f0` |
+| 900 | `#0f172a` | `#f8fafc` |
 
----
+### 2.3 状态色
 
-## 5. 布局结构（Layout）
+成功、警告、错误与重复数据状态必须使用 `--color-emerald-*`、`--color-amber-*`、`--color-rose-*`、`--color-red-*` 或对应语义别名，不得在页面中写死浅色状态底色。
 
-- **整体**：左侧固定侧栏 + 右侧主内容区，与当前 frontend-admin 骨架一致。
-- **侧栏**：  
-  - 宽度约 14rem（224px），背景 obsidian（#111111），文字白色。  
-  - 品牌区：顶部 Logo + 产品名「知识配置平台」。  
-  - 导航项：块级链接，内边距舒适（如 px-3 py-2），圆角，当前页用略深背景（如 bg-white/10 或 bg-slate-700）区分。  
-  - 悬停：未选中项 hover 时背景略亮（如 bg-white/5 或 hover:bg-slate-700）。
-- **顶栏**：  
-  - 高度约 3.5rem，背景 surface 或 canvas，带 `border-b border-border`；可选 `backdrop-blur` 与半透明（如 bg-canvas/90）。  
-  - 仅展示当前模块名称或面包屑即可，保持简洁。
-- **主内容区**：  
-  - 背景 canvas，内边距约 1.5rem（p-6）。  
-  - 区块之间用卡片（surface + 边框 + 圆角 + 轻阴影）或留白区分。
-
----
-
-## 6. 组件规范（Components）
-
-### 6.1 按钮
-
-- **主按钮（Primary）**：背景 obsidian，文字白色，字重 600，圆角 rounded-lg，内边距适中（如 px-6 py-2.5）。边框可选 `ring-1 ring-white/10`。hover 时轻微放大与阴影，active 时轻微缩小。
-- **次按钮（Secondary）**：背景 surface，边框 border，文字 obsidian，同尺寸与圆角。hover 时背景略灰（如 gray-50）、边框略深（obsidian/40）。
-- **危险操作**：可在保持形状与尺寸的前提下，用红色系背景或边框区分，与主/次按钮风格统一。
-
-### 6.2 卡片（Card）
-
-- 背景 surface，边框 1px solid border，圆角 rounded-xl，阴影采用上述「默认卡片」。
-- 悬停时（若可点击）：`translateY(-2px)`，阴影与边框略加强（border 可变为 obsidian/30）。
-- 卡片内可再分区块，用 `border-t border-border` 或留白分隔。
-
-### 6.3 表格（Table）
-
-- 容器使用 surface 卡片包裹，表头与表体背景均为 surface。
-- 表头：字重 600，字号略小（如 text-xs），obsidian，下边框 border。
-- 行：默认边框或隔行浅底（如 even:bg-canvas）二选一，保持简洁。
-- 行悬停：背景略变（如 bg-canvas/80）。
-
-### 6.4 表单（Input / Select / Textarea）
-
-- 输入框：背景 surface，边框 border，圆角 rounded-lg，内边距统一（如 px-3 py-2）。
-- 焦点：`ring-2 ring-obsidian/10` 或 `focus:border-obsidian/40`，与参考的 focus 风格一致。
-- 占位符与辅助说明：颜色 subtle，字号略小。
-- 标签：字重 500，obsidian，与输入框间距明确。
-
-### 6.5 标签与徽标（Badge / Tag）
-
-- 小标签：背景 canvas 或 surface，边框 border，圆角 rounded，字号约 0.625rem–0.75rem，字重 500，subtle 或 obsidian。
-- 状态类：成功可用绿色点或边框（如 emerald-500），与参考中的「System v2.4 Available」小标签风格一致。
-
-### 6.6 导航项（Nav Item）
-
-- 侧栏内：块级，padding 一致，圆角，当前页用深色背景与白色文字区分；未选中为白色/浅灰文字，hover 时背景略亮。
-- 与参考顶栏导航一致：字号约 text-xs，字重 500，未选中为 subtle，hover 为 obsidian。
+深色主题中的状态色应降低背景亮度、提高文字亮度，保证表格与弹层中的对比度。
 
 ---
 
-## 7. 背景与装饰（Background & Decoration）
+## 3. 圆角令牌
 
-- **页面背景**：主内容区统一 canvas（#FAFAFA），与参考 body 一致。
-- **网格底纹（可选）**：若需技术感，可使用与参考一致的 technical-grid：40px 网格线，颜色 `rgba(0,0,0,0.04)`，配合自上而下的渐变 mask 弱化底部。中后台可仅在首屏或仪表盘使用，列表/表单页保持纯色即可。
-- **顶栏**：可与参考 header 一致使用轻微 backdrop-blur 与半透明，或纯色 surface。
+所有界面圆角必须来自下表或 Tailwind 映射类，不允许新增孤立数值。
 
----
-
-## 8. 图标与图形
-
-- 与参考一致：线条图标，描边约 2px，圆角端点（stroke-linecap="round"），风格统一（如 Lucide）。
-- 颜色：主区 obsidian，辅助区 subtle；在 obsidian 背景上使用白色图标。
-
----
-
-## 9. 无障碍与状态
-
-- **焦点**：所有可聚焦控件须有清晰 focus 环（如 ring-2 ring-obsidian/20 ring-offset-1）。
-- **禁用**：透明度降低（如 opacity-60）并 `cursor-not-allowed`。
-- **错误/成功**：错误用红色边框或文字，成功用绿色点或边框，与参考中的状态指示一致。
+| Token | 值 | Tailwind 类 | 用途 |
+|-------|----|-------------|------|
+| `--radius-sm` | `0.375rem`（6px） | `rounded-sm` / `rounded-md` | 滚动条、图表柱子、统计小标签 |
+| `--radius-md` | `0.5rem`（8px） | `rounded-lg` | 图标底、行内按钮、Tab、按钮 |
+| `--radius-lg` | `0.75rem`（12px） | `rounded-xl` | 输入框、表格容器、空状态、Toast |
+| `--radius-xl` | `1rem`（16px） | `rounded-2xl` | 卡片、弹层、统计容器、登录卡片 |
+| `--radius-2xl` | `1.25rem`（20px） | `rounded-3xl` | 兼容扩展与大号品牌图形 |
+| `--radius-full` | `9999px` | `rounded-full` | 状态徽标 |
 
 ---
 
-## 10. 与参考的对应关系（摘要）
+## 4. 阴影与层级
 
-| 参考元素 | 在本项目中的用法 |
-|----------|------------------|
-| canvas / obsidian / subtle / border 色板 | 全站统一色板 |
-| Plus Jakarta Sans + Inter + JetBrains Mono | 正文/标题/等宽 |
-| premium-card（白底、细边框、轻阴影、hover 上浮） | 所有内容卡片、列表容器 |
-| 主按钮（黑底、白字、hover 放大、可选 shimmer） | 主要操作按钮 |
-| 顶栏（backdrop-blur、border-b） | 中后台顶栏 |
-| 小标签（圆角、边框、小字号） | 状态、类型、角标 |
-| technical-grid | 可选，用于概览或仪表盘 |
+阴影统一表达组件层级。深色主题中使用更强的黑色阴影，而不是照搬浅色阴影。
+
+| Token | 浅色用途 |
+|-------|----------|
+| `--shadow-xs` | 主题切换等小型控件 |
+| `--shadow-sm` / `--shadow-card` | 常规卡片、表格卡片 |
+| `--shadow-card-hover` | 卡片悬停 |
+| `--shadow-button` | 主按钮默认 |
+| `--shadow-button-hover` | 主按钮悬停、登录按钮悬停 |
+| `--shadow-lg` | 登录品牌图形 |
+| `--shadow-xl` | 登录卡片 |
+| `--shadow-toast` | Toast |
+| `--shadow-overlay` | Modal、Confirm 弹层 |
+| `--shadow-focus` | 绿色输入焦点环 |
+| `--shadow-focus-control` | Select 等控件焦点环 |
+| `--shadow-focus-login` | 登录输入框焦点环 |
+
+弹层层级：普通控件 < 卡片 < 悬浮主题按钮（z-index 40）< Modal（z-index 50）< Confirm（z-index 60）< Toast（z-index 9999）。
 
 ---
 
-**文档版本**：v1.0  
-**状态**：设计规范已定稿，前端实现需按此执行；后续若有组件库或设计稿，以本规范为基准对齐。
+## 5. 核心组件规范
+
+### 5.1 卡片
+
+- 使用 `premium-card` 或 Tailwind 的 `rounded-xl`（12px 容器）/ `rounded-2xl`（16px 卡片）配合卡片阴影。
+- 背景：`--color-surface`。
+- 边框：`1px var(--color-border-light)`。
+- 阴影：默认 `--shadow-card`，悬停 `--shadow-card-hover`。
+
+### 5.2 表格与空状态
+
+- 表格必须放在卡片内，容器圆角使用 `rounded-lg/xl`，避免子元素溢出。
+- 表头使用 `--color-slate-50`，行悬停使用 `--color-slate-100`。
+- 单元格正文使用 `--color-text-base`，辅助列使用 `--color-text-muted`。
+- 空状态使用 `empty-state`，背景为表面色、文字为辅助色，并保留垂直留白；深色主题下不得只显示一条深色文字。
+
+### 5.3 弹层
+
+- 遮罩：`--color-overlay` + 4px 背景模糊。
+- 弹层：`--color-surface`、`--color-border`、`--radius-xl`、`--shadow-overlay`。
+- 标题使用 `--color-text-strong`，表单标签使用 `--color-text-base`。
+- 弹层最大高度受视口限制，内容区可滚动。
+
+### 5.4 表单
+
+- 普通输入框默认使用 `--color-slate-100` 作为填充表面，聚焦后切换为 `--color-surface`。
+- Select 使用表面色、主题边框和随主题切换的箭头 SVG。
+- 焦点环必须使用焦点阴影令牌。
+- `option` 也必须设置深色背景与文字，避免系统弹层仍为白底深字但与页面风格割裂。
+
+### 5.5 按钮
+
+- 主按钮使用 `--color-primary` 与 `--color-on-primary`；深色主题下是浅底深字，不再固定黑底白字。
+- 次按钮使用表面色、主题边框和正文色。
+- 危险链接使用 `--color-red-600`，悬停背景使用 `--color-danger-soft`。
+
+### 5.6 批量导入
+
+- 上传区域使用 `--color-slate-50` 与虚线边框，拖入时使用绿色描边和 `--color-file-zone-active`。
+- 预览表格沿用卡片、表格和边框令牌。
+- “新增 / 已有重复 / 同批重复”徽标必须使用对应的 emerald、amber、rose 状态令牌。
+
+### 5.7 图表
+
+- 坐标轴、刻度、网格、图例、Tooltip 与系列色使用 `--chart-*` 变量。
+- 饼图分割线使用 `--color-surface`。
+- 切换主题后通过 `themechange` 更新 Chart.js 配置并调用 `chart.update('none')`。
+
+### 5.8 登录页
+
+- 背景渐变使用 `--login-gradient`。
+- 登录卡片沿用卡片圆角与阴影令牌。
+- Logo 与登录按钮使用品牌主色令牌，不允许固定黑底白字。
+
+---
+
+## 6. 兼容性要求
+
+- 浅色主题为默认主题，现有页面布局、间距、字号和视觉层级不得走样。
+- 深浅色切换只替换设计令牌和必要的图表配置，不改变信息结构与操作路径。
+- 弹层、表格、空状态、表单、Toast、批量导入预览在深色主题下必须保持可读。
+- 所有新增组件优先使用语义令牌；只有设计稿确认的新令牌才能加入本规范。
+
+---
+
+**文档版本**：v2.0
+**状态**：已纳入浅色 / 深色双主题、配色、圆角、阴影与持久化规范。

@@ -8,64 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="js/theme.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script src="js/tailwind-config.js"></script>
   <link href="css/common.css" rel="stylesheet" />
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    .login-bg {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-      min-height: 100vh;
-    }
-    .login-card {
-      animation: card-in 0.4s ease;
-    }
-    @keyframes card-in {
-      from { opacity: 0; transform: translateY(-20px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .input-login {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      transition: all 0.2s ease;
-    }
-    .input-login:focus {
-      background: #ffffff;
-      border-color: #94a3b8;
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
-    }
-    .btn-login {
-      background: #0f172a;
-      transition: all 0.2s ease;
-    }
-    .btn-login:hover {
-      background: #1e293b;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-    }
-    .btn-login:active {
-      transform: translateY(0);
-    }
-    .shake {
-      animation: shake 0.4s ease;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-  </style>
 </head>
 <body class="login-bg text-slate-600 font-sans antialiased">
   <div class="min-h-screen flex items-center justify-center p-6">
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl shadow-lg mb-4">
-          <span class="iconify text-white" data-icon="lucide:book-open" data-width="32" data-height="32"></span>
+        <div class="brand-mark inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-4">
+          <span class="iconify" data-icon="lucide:book-open" data-width="32" data-height="32"></span>
         </div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-tight">知识配置平台</h1>
         <p class="text-sm text-slate-500 mt-1">运营中后台管理系统</p>
@@ -117,7 +72,7 @@
           <button 
             type="submit" 
             id="loginBtn"
-            class="btn-login w-full py-3 text-white font-medium rounded-xl flex items-center justify-center gap-2"
+            class="btn-login w-full py-3 font-medium rounded-xl flex items-center justify-center gap-2"
           >
             <span class="iconify" data-icon="lucide:log-in" data-width="18" data-height="18"></span>
             登录

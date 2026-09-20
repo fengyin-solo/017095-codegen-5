@@ -41,13 +41,17 @@
     // 创建用户信息区域
     var userInfo = document.createElement('div');
     userInfo.className = 'user-info ml-auto flex items-center gap-3';
-    userInfo.innerHTML = 
+    userInfo.innerHTML =
       '<span class="text-sm text-slate-500">欢迎，<span class="font-medium text-slate-700">' + (user.name || user.username) + '</span></span>' +
-      '<button type="button" id="logoutBtn" class="logout-btn inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">' +
+      '<button type="button" id="logoutBtn" class="logout-btn inline-flex items-center gap-1 text-sm text-slate-500 px-3 py-1.5 rounded-lg transition-colors">' +
         '<span class="iconify" data-icon="lucide:log-out" data-width="16" data-height="16"></span>' +
         '退出' +
       '</button>';
     header.appendChild(userInfo);
+
+    if (window.AppTheme && !header.querySelector('.theme-toggle')) {
+      header.appendChild(window.AppTheme.createToggle());
+    }
 
     // 绑定退出事件
     var logoutBtn = document.getElementById('logoutBtn');
