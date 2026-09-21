@@ -8,17 +8,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script>
+  (function () {
+    try {
+      var savedTheme = localStorage.getItem('knowledge_platform_theme');
+      var theme = savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : 'light';
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = theme;
+    } catch (_) {}
+  })();
+</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script src="js/tailwind-config.js"></script>
+  <script src="js/theme.js"></script>
   <link href="css/common.css" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .login-bg {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+      background: linear-gradient(135deg, var(--slate-50) 0%, var(--slate-200) 50%, var(--slate-100) 100%);
       min-height: 100vh;
+    }
+    html.dark .login-bg {
+      background: radial-gradient(circle at top, rgba(5, 150, 105, 0.16), transparent 32%),
+        linear-gradient(135deg, #020617 0%, #0f172a 52%, #111827 100%);
     }
     .login-card {
       animation: card-in 0.4s ease;
@@ -28,23 +41,25 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .input-login {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: var(--slate-100);
+      border: 1px solid var(--border);
+      color: var(--slate-900);
       transition: all 0.2s ease;
     }
     .input-login:focus {
-      background: #ffffff;
-      border-color: #94a3b8;
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+      background: var(--surface);
+      border-color: var(--slate-400);
+      box-shadow: var(--focus-ring);
     }
     .btn-login {
-      background: #0f172a;
+      background: var(--primary);
+      color: var(--on-primary);
       transition: all 0.2s ease;
     }
     .btn-login:hover {
-      background: #1e293b;
+      background: var(--primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+      box-shadow: var(--shadow-control-hover);
     }
     .btn-login:active {
       transform: translateY(0);
@@ -64,8 +79,8 @@
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl shadow-lg mb-4">
-          <span class="iconify text-white" data-icon="lucide:book-open" data-width="32" data-height="32"></span>
+        <div class="brand-mark inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-logo mb-4">
+          <span class="iconify" data-icon="lucide:book-open" data-width="32" data-height="32"></span>
         </div>
         <h1 class="text-2xl font-bold text-slate-900 tracking-tight">知识配置平台</h1>
         <p class="text-sm text-slate-500 mt-1">运营中后台管理系统</p>
@@ -109,7 +124,7 @@
           </div>
 
           <!-- 错误提示 -->
-          <div id="errorMsg" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+          <div id="errorMsg" class="form-alert hidden text-sm border rounded-lg px-4 py-3">
             <span class="iconify inline-block mr-1 align-text-bottom" data-icon="lucide:alert-circle" data-width="16" data-height="16"></span>
             <span id="errorText">用户名或密码错误</span>
           </div>
@@ -117,7 +132,7 @@
           <button 
             type="submit" 
             id="loginBtn"
-            class="btn-login w-full py-3 text-white font-medium rounded-xl flex items-center justify-center gap-2"
+            class="btn-login w-full py-3 font-medium rounded-xl flex items-center justify-center gap-2"
           >
             <span class="iconify" data-icon="lucide:log-in" data-width="18" data-height="18"></span>
             登录

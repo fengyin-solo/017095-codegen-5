@@ -1,6 +1,11 @@
-/** Tailwind 设计规范 - VOYAGE 风格（slate/emerald，圆角与阴影） */
+/** Tailwind 设计规范 - VOYAGE 风格（slate/emerald，圆角、阴影与双主题） */
 (function () {
+  var varColor = function (name) {
+    return 'var(' + name + ')';
+  };
+
   var config = {
+    darkMode: 'class',
     theme: {
       extend: {
         fontFamily: {
@@ -8,40 +13,64 @@
           mono: ['"JetBrains Mono"', 'monospace'],
         },
         colors: {
-          canvas: '#f8fafc',
-          surface: '#ffffff',
-          obsidian: '#0f172a',
-          charcoal: '#334155',
-          subtle: '#64748b',
-          border: '#e2e8f0',
-          accent: '#059669',
-          primary: '#0f172a',
+          canvas: varColor('--canvas'),
+          surface: varColor('--surface'),
+          obsidian: varColor('--obsidian'),
+          charcoal: varColor('--slate-700'),
+          subtle: varColor('--subtle'),
+          border: varColor('--border'),
+          accent: varColor('--accent'),
+          primary: varColor('--primary'),
           slate: {
-            50: '#f8fafc',
-            100: '#f1f5f9',
-            200: '#e2e8f0',
-            400: '#94a3b8',
-            500: '#64748b',
-            600: '#475569',
-            700: '#334155',
-            900: '#0f172a',
+            50: varColor('--slate-50'),
+            100: varColor('--slate-100'),
+            200: varColor('--slate-200'),
+            400: varColor('--slate-400'),
+            500: varColor('--slate-500'),
+            600: varColor('--slate-600'),
+            700: varColor('--slate-700'),
+            800: varColor('--slate-800'),
+            900: varColor('--slate-900'),
+          },
+          white: varColor('--on-primary'),
+          red: {
+            50: varColor('--danger-soft'),
+            200: varColor('--danger-border'),
+            500: varColor('--danger'),
+            600: varColor('--danger-strong'),
+          },
+          amber: {
+            50: varColor('--warning-bg'),
+            700: varColor('--warning-text'),
+          },
+          rose: {
+            50: varColor('--error-bg'),
+            700: varColor('--error-text'),
           },
           emerald: {
-            500: '#10b981',
-            600: '#059669',
-            700: '#047857',
+            500: varColor('--emerald-500'),
+            600: varColor('--emerald-600'),
+            700: varColor('--emerald-700'),
+            900: varColor('--emerald-900'),
           },
         },
         borderRadius: {
-          xl: '0.75rem',
-          '2xl': '1rem',
+          sm: '0.125rem',
+          lg: varColor('--radius-sm'),
+          xl: varColor('--radius-control'),
+          '2xl': varColor('--radius-card'),
           '3xl': '1.25rem',
         },
         letterSpacing: { tight: '-0.02em', tighter: '-0.04em' },
         boxShadow: {
-          card: '0 1px 3px 0 rgba(0,0,0,0.04), 0 4px 12px -2px rgba(0,0,0,0.05)',
-          'card-hover': '0 4px 12px -2px rgba(0,0,0,0.06), 0 12px 32px -6px rgba(0,0,0,0.08)',
-          voyage: '0 4px 20px -4px rgba(0,0,0,0.08)',
+          sm: varColor('--shadow-sm'),
+          DEFAULT: varColor('--shadow-card'),
+          md: varColor('--shadow-voyage'),
+          lg: varColor('--shadow-lg'),
+          xl: varColor('--shadow-xl'),
+          card: varColor('--shadow-card'),
+          'card-hover': varColor('--shadow-card-hover'),
+          voyage: varColor('--shadow-voyage'),
         },
       },
     },

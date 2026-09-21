@@ -535,12 +535,12 @@
       var newCount = total - dupCount;
 
       var statsHtml =
-        '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium">新增 ' + newCount + ' 条</span>';
+        '<span class="import-stat-new">新增 ' + newCount + ' 条</span>';
       if (existingDupCount > 0) {
-        statsHtml += '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium">已有重复 ' + existingDupCount + ' 条</span>';
+        statsHtml += '<span class="import-stat-existing">已有重复 ' + existingDupCount + ' 条</span>';
       }
       if (internalDupCount > 0) {
-        statsHtml += '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-medium">同批重复 ' + internalDupCount + ' 条</span>';
+        statsHtml += '<span class="import-stat-internal">同批重复 ' + internalDupCount + ' 条</span>';
       }
       statsHtml += '<span class="text-slate-500">共 ' + total + ' 条</span>';
 

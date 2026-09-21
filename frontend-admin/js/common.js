@@ -35,19 +35,27 @@
     var header = document.querySelector('.app-header');
     if (!header) return;
 
+    var actions = header.querySelector('.header-actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'header-actions';
+      header.appendChild(actions);
+    }
+
     // 检查是否已添加用户信息
-    if (header.querySelector('.user-info')) return;
+    if (actions.querySelector('.user-info')) return;
 
     // 创建用户信息区域
     var userInfo = document.createElement('div');
-    userInfo.className = 'user-info ml-auto flex items-center gap-3';
-    userInfo.innerHTML = 
+    userInfo.className = 'user-info flex items-center gap-3';
+    userInfo.innerHTML =
       '<span class="text-sm text-slate-500">欢迎，<span class="font-medium text-slate-700">' + (user.name || user.username) + '</span></span>' +
       '<button type="button" id="logoutBtn" class="logout-btn inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">' +
         '<span class="iconify" data-icon="lucide:log-out" data-width="16" data-height="16"></span>' +
         '退出' +
       '</button>';
-    header.appendChild(userInfo);
+    actions.appendChild(userInfo);
+    if (typeof ThemeManager !== 'undefined') ThemeManager.initToggles();
 
     // 绑定退出事件
     var logoutBtn = document.getElementById('logoutBtn');
